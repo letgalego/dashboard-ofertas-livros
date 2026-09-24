@@ -57,6 +57,19 @@ def ler_livros(caminho):
             arquivo.close()
     return livros
 
+def livro_mais_caro(livros):
+    nome_livro = ""
+    preco_livro = 0
+    for livro in livros:
+        preco_original: str = livro["preco"]
+        preco_original_limpo: str = preco_original.replace("£", "")
+        preco_num: float = float(preco_original_limpo)
+        if (preco_num > preco_livro):
+            preco_livro = preco_num
+            nome_livro = livro["titulo"]
+
+    return nome_livro, preco_livro
+
 if __name__ == "__main__":
     catalogo = ler_livros(CAMINHO_LIVROS)
     print(f"A quantidade de livros eh {len(catalogo)}")
