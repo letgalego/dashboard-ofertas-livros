@@ -36,23 +36,27 @@ def calcular_preco_medio(livros):
     """
     soma: float = 0
     for livro in livros:
-        preco_original: str = livro["preco"]
-        preco_original_limpo: str = preco_original.replace("£", "")
-        preco_num: float = float(preco_original_limpo)
-        soma += preco_num
-
+        soma += livro["preco"]
+    
     preco_medio: float = soma / len(livros)
     return preco_medio
+
+def converter_preco(preco):
+    return float(preco.replace("£", ""))
+
+def converter_nota(nota):
+    notas = ["One", "Two", "Three", "Four", "Five"]
+    for nome in notas:
+        if (nome == nota):
+            return notas.index(nome) + 1
 
 
 def contar_cinco_estrelas(livros):
     """Conta quantos livros têm a nota máxima. A nota vem como texto ("Five")."""
     contador: int = 0
     for livro in livros:
-        nota_limpa: str = livro["nota"].lower().strip()
-        if nota_limpa == "five":
+        if livro["nota"] == 5:
             contador += 1
-
     return contador
 
 
@@ -60,14 +64,28 @@ def encontrar_mais_caro(livros):
     """Devolve o livro de maior preço. O preço vem como texto ("£51.77")."""
     mais_caro = livros[0]
     for livro in livros:
-        preco = float(livro["preco"].replace("£", ""))
-        preco_mais_caro = float(mais_caro["preco"].replace("£", ""))
-        if preco > preco_mais_caro:
+        if livro["preco"] > mais_caro["preco"]:
             mais_caro = livro
     return mais_caro
 
+def preparar_livros(livros):
+    livrosConvertidos = []
+    for livro in livros:
+        livro = {
+            "titulo": livro["titulo"],
+            "preco": converter_preco(livro["preco"]),
+            "categoria": livro["categoria"],
+            "nota": converter_nota(livro["nota"]),
+            "url": livro["url"]
+        }
+        livrosConvertidos.append(livro)
+    return livrosConvertidos
+
+def carregar_livros():
+    return preparar_livros(ler_livros())
 
 if __name__ == "__main__":
-    livros = ler_livros()
-    print(f"{len(livros)} livros carregados")
-    print("Primeiro livro:", livros[0])
+    preco_original = "£32.00"
+    print(converter_preco(preco_original))
+    nota = "One"
+    print(converter_nota(nota))
