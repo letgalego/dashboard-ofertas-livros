@@ -63,6 +63,7 @@ def main():
     col4.caption(mais_caro["titulo"])
 
     busca = st.text_input(label="🔎 Busca pelo título", type="search")
+    # se a busca não estiver vazia ele pega a string da busca e procura livros com essa string
     if (busca != ""):
         livros_busca = dados.buscar_por_titulo(livros, busca)
         if (len(livros_busca) > 0):
@@ -71,6 +72,7 @@ def main():
         else:
             st.warning("Nenhum livro encontrado")
     else:
+        # se estiver vazia, exibe a tabela normal
         st.dataframe(tabela)
 
 
