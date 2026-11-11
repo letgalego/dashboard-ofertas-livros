@@ -140,6 +140,11 @@ def montar_tabela_favoritos(favoritos):
         tabela.append(linha)
     return tabela
 
+def aplicar_desconto(favorito, porcentagem):
+    com_desconto = favorito.copy()
+    com_desconto["preco"] = favorito["preco"] * (100 - porcentagem) / 100
+    return com_desconto
+
 def mostrar_favoritos():
     """Mostra os favoritos salvos."""
     favoritos = dados.carregar_favoritos()
@@ -152,8 +157,31 @@ def mostrar_favoritos():
         st.info("Nenhum favorito ainda.")
         return
     st.dataframe(montar_tabela_favoritos(favoritos), hide_index=True, width="stretch")
-    titulo = st.selectbox("Escolha um favorito", list(favoritos.keys()))
-    favorito = favoritos[titulo]
+    favorito_selecionado = st.selectbox("Escolha um favorito", list(favoritos.keys()))
+
+    favorito = favoritos[favorito_selecionado]
+
+    col1, col2 = st.columns(2)
+
+    col1.metric("Preço", f"£ {favorito['preco']:.2f}")
+    col2.metric("Com 10% de desconto", f"£ {aplicar_desconto(favorito, 10)['preco']:.2f}")
+
+    novo_status = st.text_input("Status", favorito['status'])
+    novo_comentario = st.text_input("Comentario", favorito['comentario'])
+
+    if st.button("Remover favorito"):
+        ## remove do dicionario (memoria volatil)
+        del favoritos[favorito_selecionado]
+        ## remove do arquivo (memoria persistente)
+        dados.gravar_favoritos(favoritos)
+        st.warning(f"O favorito {favorito_selecionado} foi removido")
+        st.rerun()
+
+    if st.button("Editar Favorito"):
+        favorito.update({"status": novo_status, "comentario": novo_comentario})
+        dados.gravar_favoritos(favoritos)
+        st.success("Favorito editado!")
+        st.rerun()
 
 
 def mostrar_catalogo(livros):

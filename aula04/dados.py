@@ -105,6 +105,20 @@ def salvar_favorito(livro):
             "comentario": "",
             })
 
+def gravar_favoritos(favoritos):
+    """Reescreve o arquivo inteiro com os favoritos do dicionário (modo "w")."""
+    with open(CAMINHO_FAVORITOS, "w", encoding="utf-8", newline="") as arquivo:
+        escritor = csv.DictWriter(arquivo, fieldnames=CAMPOS_FAVORITO)
+        escritor.writeheader()
+        for titulo, favorito in favoritos.items():
+            escritor.writerow({
+                "titulo": titulo,
+                "preco": favorito["preco"],
+                "categoria": favorito["categoria"],
+                "status": favorito["status"],
+                "comentario": favorito["comentario"],
+            })
+
 
 if __name__ == "__main__":
     # Só roda com "python dados.py". Quando o app faz "import dados", nada disto executa.
